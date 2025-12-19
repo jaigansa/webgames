@@ -1,40 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
-  <title>Raja Rani Empire</title>
-  
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#020617">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  
-  <style>
-    body { 
-      font-family: 'Poppins', sans-serif; background: #020617; color: white; margin: 0; padding: 0;
-      min-height: 100vh; min-height: -webkit-fill-available; display: flex; flex-direction: column; overflow-x: hidden;
-    }
-    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-    .font-royal { font-family: 'Cinzel', serif; }
-    .glass-card { 
-      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(234, 179, 8, 0.2); 
-      width: 100%; max-width: 400px; border-radius: 3rem; padding: 2rem; position: relative; margin: auto;
-    }
-    .screen-fade { animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .siren-bg { animation: flash-blue 1.5s infinite; }
-    @keyframes flash-blue { 0%, 100% { background-color: #020617; } 50% { background-color: #1e3a8a; } }
-    input { font-size: 16px !important; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .victory-badge { font-size: 8px; padding: 2px 8px; border-radius: 99px; font-weight: 900; text-transform: uppercase; margin-left: 4px; display: inline-block; }
-    .badge-gold { background: linear-gradient(to bottom, #fde047, #ca8a04); color: black; }
-    .badge-dark { background: linear-gradient(to bottom, #475569, #0f172a); color: white; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Raja Rani Empire</title>
+    <meta property="og:title" content="Raja Rani Empire">
+    <meta property="og:description" content="The classic Raja Rani game reimagined for your phone!">
+    <meta property="og:image" content="icon-512.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body id="mainBody">
 
@@ -43,275 +19,110 @@
 <audio id="sndWin" src="sound/win.mp3" preload="auto"></audio>
 <audio id="sndFail" src="sound/fail.mp3" preload="auto"></audio>
 
-<div class="fixed top-5 right-5 z-[5000] flex gap-3">
-    <button onclick="toggleInfoModal()" class="bg-slate-800/80 text-blue-400 w-11 h-11 rounded-full flex items-center justify-center border border-slate-600 text-xl font-bold">?</button>
-    <button onclick="toggleScoreModal()" class="bg-slate-800/80 text-yellow-500 w-11 h-11 rounded-full flex items-center justify-center border border-slate-600 text-xl">📊</button>
+<div class="fixed top-0 left-0 right-0 z-[5000] h-20 flex items-center justify-end px-6 pointer-events-none">
+    <div class="flex gap-3 pointer-events-auto">
+        <button onclick="toggleInfoModal()" class="bg-slate-800/95 text-blue-400 w-12 h-12 rounded-full flex items-center justify-center border border-slate-600 text-xl font-bold shadow-2xl active:scale-90 transition-transform">?</button>
+        <button onclick="toggleScoreModal()" class="bg-slate-800/95 text-yellow-500 w-12 h-12 rounded-full flex items-center justify-center border border-slate-600 text-xl shadow-2xl active:scale-90 transition-transform">📊</button>
+    </div>
 </div>
 
 <main>
-  <div class="glass-card">
-    
-    <div id="roundSetup" class="space-y-8 text-center screen-fade">
-        <h1 class="text-4xl font-royal text-yellow-500 tracking-widest">RAJA RANI</h1>
-        <div class="bg-slate-950/60 p-6 rounded-[2rem] border border-slate-800">
-            <p class="text-[10px] font-bold text-slate-500 uppercase mb-2">Total Rounds</p>
-            <input id="roundInput" type="number" inputmode="numeric" value="5" class="bg-transparent text-6xl text-yellow-500 font-bold w-full text-center outline-none" />
-        </div>
-        <button onclick="confirmRounds()" class="w-full bg-yellow-500 text-black font-black py-6 rounded-2xl uppercase shadow-xl">Set Empire</button>
-    </div>
-
-    <div id="setup" class="hidden space-y-6 screen-fade">
-        <h2 class="text-center font-royal text-yellow-500 text-xl uppercase">The Court</h2>
-        <div class="space-y-3">
-            <input id="playerName" placeholder="Player Name" class="w-full p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center font-bold text-yellow-500 uppercase outline-none" />
-            <input id="playerPass" type="password" inputmode="numeric" maxlength="2" placeholder="PIN" class="w-full p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center tracking-[1em] outline-none" />
-        </div>
-        <button onclick="addPlayer()" class="w-full bg-slate-800 py-4 rounded-xl font-bold text-[10px] uppercase border border-slate-700">Add Player</button>
-        <div id="playerList" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar pt-4"></div>
-        <button id="startBtn" onclick="startGame()" class="w-full bg-green-600 py-6 rounded-2xl font-black hidden uppercase">Begin Game</button>
-    </div>
-
-    <div id="passwordScreen" class="hidden text-center space-y-8 screen-fade">
-        <h2 id="turnIndicator" class="text-2xl font-royal text-white px-2"></h2>
-        <div id="pinEntryArea" class="space-y-6">
-            <input id="checkPass" type="password" inputmode="numeric" maxlength="2" placeholder="••" class="w-32 p-6 text-center text-6xl font-bold rounded-[2rem] bg-slate-950 border-2 border-slate-800 outline-none mx-auto block text-yellow-500" />
-            <button onclick="checkPassword()" class="bg-yellow-500 text-black font-black py-6 rounded-2xl w-full uppercase">Unlock</button>
-        </div>
-        <div id="roleDisplayArea" class="hidden flex flex-col items-center">
-            <div class="w-full bg-slate-950 min-h-[250px] px-6 py-10 rounded-[3.5rem] border-2 border-yellow-500/30 flex flex-col justify-center items-center">
-                <p id="roleShow" class="text-4xl font-royal tracking-widest text-yellow-500"></p>
-                <div class="h-[1px] w-10 bg-slate-800 my-6"></div>
-                <p class="text-[11px] text-slate-400 uppercase italic">Keep it hidden!</p>
+    <div class="glass-card">
+        <div id="roundSetup" class="screen-fade space-y-8 text-center">
+            <h1 class="text-4xl font-royal text-yellow-500 tracking-widest">RAJA RANI</h1>
+            <div class="bg-slate-950/60 p-6 rounded-[2.5rem] border border-slate-800">
+                <p class="text-[10px] font-bold text-slate-500 uppercase mb-2">Total Rounds</p>
+                <input id="roundInput" type="number" inputmode="numeric" value="5" class="bg-transparent text-6xl text-yellow-500 font-bold w-full text-center outline-none" />
             </div>
-            <button onclick="hideRole()" class="bg-slate-800 text-white font-bold py-5 rounded-2xl w-full mt-8 uppercase">Hide Role</button>
+            <button onclick="confirmRounds()" class="w-full bg-yellow-500 text-black font-black py-6 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Set Empire</button>
         </div>
-        <div id="passPhoneArea" class="hidden py-4">
-            <button onclick="nextPlayer()" class="bg-blue-600 text-white font-black py-6 rounded-2xl w-full uppercase">Next Player</button>
+
+        <div id="setup" class="hidden space-y-6 screen-fade">
+            <h2 class="text-center font-royal text-yellow-500 text-xl uppercase">The Court</h2>
+            <div class="space-y-3">
+                <input id="playerName" placeholder="Player Name" class="w-full p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center font-bold text-yellow-500 uppercase outline-none" />
+                <input id="playerPass" type="password" inputmode="numeric" maxlength="2" placeholder="PIN" class="w-full p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center tracking-[1em] outline-none" />
+            </div>
+            <button onclick="addPlayer()" class="w-full bg-slate-800 py-4 rounded-xl font-bold text-[10px] uppercase border border-slate-700">Add Player</button>
+            <div id="playerList" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar pt-4 text-sm"></div>
+            <button id="startBtn" onclick="startGame()" class="w-full bg-green-600 py-6 rounded-2xl font-black hidden uppercase shadow-lg">Begin Game</button>
+        </div>
+
+        <div id="passwordScreen" class="hidden text-center space-y-8 screen-fade">
+            <h2 id="turnIndicator" class="text-2xl font-royal text-white px-2 uppercase"></h2>
+            <div id="pinEntryArea" class="space-y-6">
+                <input id="checkPass" type="password" inputmode="numeric" maxlength="2" placeholder="••" class="w-32 p-6 text-center text-6xl font-bold rounded-[2rem] bg-slate-950 border-2 border-slate-800 outline-none mx-auto block text-yellow-500" />
+                <button onclick="checkPassword()" class="bg-yellow-500 text-black font-black py-6 rounded-2xl w-full uppercase shadow-xl">Unlock Role</button>
+            </div>
+            <div id="roleDisplayArea" class="hidden flex flex-col items-center">
+                <div class="w-full bg-slate-950 min-h-[250px] px-6 py-10 rounded-[3.5rem] border-2 border-yellow-500/30 flex flex-col justify-center items-center">
+                    <p id="roleShow" class="text-4xl font-royal tracking-widest text-yellow-500"></p>
+                    <div class="h-[1px] w-10 bg-slate-800 my-6"></div>
+                    <p class="text-[11px] text-slate-400 uppercase italic">Keep it hidden!</p>
+                </div>
+                <button onclick="hideRole()" class="bg-slate-800 text-white font-bold py-5 rounded-2xl w-full mt-8 uppercase">Hide Role</button>
+            </div>
+            <div id="passPhoneArea" class="hidden py-4 text-center">
+                <p class="text-xs text-slate-500 mb-4 animate-pulse">PASS PHONE TO NEXT PLAYER</p>
+                <button onclick="nextPlayer()" class="bg-blue-600 text-white font-black py-6 rounded-2xl w-full uppercase shadow-lg">I Have the Phone</button>
+            </div>
+        </div>
+
+        <div id="policeScreen" class="hidden space-y-6 screen-fade">
+            <div class="text-center">
+                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Kavalan (Police)</p>
+                <h2 id="policeName" class="text-3xl font-royal text-white"></h2>
+            </div>
+            <div id="timerDisplay" class="text-center text-6xl font-mono font-bold text-yellow-500 bg-slate-950 p-4 rounded-3xl border border-white/5 shadow-inner">30s</div>
+            <div id="suspectContainer" class="space-y-3 max-h-56 overflow-y-auto no-scrollbar"></div>
+            <button id="arrestBtn" onclick="submitGuess(false)" class="bg-blue-700 py-6 rounded-2xl w-full font-black uppercase opacity-20 pointer-events-none shadow-lg">ARREST</button>
+        </div>
+
+        <div id="celebrationScreen" class="hidden space-y-8 screen-fade text-center">
+            <h2 class="text-4xl font-royal text-yellow-500">EMPIRE TOTALS</h2>
+            <div id="podium" class="space-y-4 py-4 text-left"></div>
+            <div class="space-y-3">
+                <button onclick="shareResults()" class="w-full bg-blue-600 text-white font-black py-6 rounded-2xl uppercase shadow-lg">Share Rankings 📤</button>
+                <button onclick="fullReset()" class="w-full bg-white text-black font-black py-6 rounded-2xl uppercase shadow-lg">Full Restart</button>
+            </div>
         </div>
     </div>
-
-    <div id="policeScreen" class="hidden space-y-6 screen-fade">
-        <div class="text-center">
-            <p class="text-[10px] text-blue-400 font-bold uppercase">Kavalan</p>
-            <h2 id="policeName" class="text-4xl font-royal text-white"></h2>
-        </div>
-        <div id="timerDisplay" class="text-center text-6xl font-mono font-bold text-yellow-500 bg-slate-950 p-4 rounded-3xl">30s</div>
-        <div id="suspectContainer" class="space-y-3 max-h-56 overflow-y-auto no-scrollbar"></div>
-        <button id="arrestBtn" onclick="submitGuess(false)" class="bg-blue-700 py-6 rounded-2xl w-full font-black uppercase opacity-20 pointer-events-none">ARREST</button>
-    </div>
-
-    <div id="scoreScreen" class="hidden space-y-6 screen-fade">
-        <h2 class="text-center font-royal text-yellow-500 text-xl uppercase">Round <span id="roundNum"></span> Results</h2>
-        <div id="roundResultsList" class="space-y-3"></div>
-        <button id="nextRoundBtn" onclick="nextRound()" class="w-full bg-indigo-700 py-6 rounded-2xl font-black uppercase">Next Round</button>
-    </div>
-
-    <div id="celebrationScreen" class="hidden space-y-8 screen-fade text-center">
-        <h2 class="text-4xl font-royal text-yellow-500">EMPIRE TOTALS</h2>
-        <div id="podium" class="space-y-4 py-4"></div>
-        <button onclick="resetEntireGame()" class="w-full bg-white text-black font-black py-6 rounded-2xl uppercase">Restart Game</button>
-    </div>
-
-  </div>
 </main>
-
-<div id="verdictOverlay" class="hidden fixed inset-0 z-[6000] flex items-center justify-center p-8 backdrop-blur-3xl bg-slate-950/80">
-    <div class="w-full max-w-sm glass-card p-10 text-center border-2" id="verdictBox">
-        <div id="verdictIcon" class="text-8xl mb-6"></div>
-        <h2 id="verdictTitle" class="text-4xl font-royal mb-4 uppercase"></h2>
-        <p id="verdictDesc" class="text-slate-400 text-xs uppercase mb-10"></p>
-        <button onclick="closeVerdict()" class="w-full bg-white text-black font-black py-5 rounded-2xl uppercase">Continue</button>
-    </div>
-</div>
 
 <div id="infoModal" class="hidden fixed inset-0 z-[8000] bg-slate-950/98 flex items-center justify-center p-6 backdrop-blur-xl">
     <div class="w-full max-w-sm glass-card space-y-6">
         <h2 class="text-2xl font-royal text-yellow-500 text-center uppercase">Points System</h2>
         <div class="space-y-2 text-xs text-slate-300">
-            <div class="p-3 bg-slate-900 rounded-xl flex justify-between"><span>👑 Raja</span><span>1000</span></div>
-            <div class="p-3 bg-slate-900 rounded-xl flex justify-between"><span>👸 Rani</span><span>500</span></div>
-            <div class="p-3 bg-slate-900 rounded-xl flex justify-between"><span>👮 Kavalan</span><span>Win: 250</span></div>
-            <div class="p-3 bg-slate-900 rounded-xl flex justify-between"><span>👤 Thirudan</span><span>Win: 250</span></div>
-            <div class="p-3 bg-slate-900 rounded-xl flex justify-between"><span>👥 Makkal</span><span>300</span></div>
+            <div class="p-4 bg-slate-900/80 rounded-2xl flex justify-between border border-slate-800"><span>👑 Raja</span><span>1000</span></div>
+            <div class="p-4 bg-slate-900/80 rounded-2xl flex justify-between border border-slate-800"><span>👸 Rani</span><span>500</span></div>
+            <div class="p-4 bg-slate-900/80 rounded-2xl flex justify-between border border-slate-800"><span>👮 Kavalan</span><span>Win: 250</span></div>
+            <div class="p-4 bg-slate-900/80 rounded-2xl flex justify-between border border-slate-800"><span>👤 Thirudan</span><span>Win: 250</span></div>
+            <div class="p-4 bg-slate-900/80 rounded-2xl flex justify-between border border-slate-800"><span>👥 Makkal</span><span>300</span></div>
         </div>
-        <button onclick="toggleInfoModal()" class="w-full bg-slate-800 py-4 rounded-2xl font-bold">CLOSE</button>
+        <button onclick="toggleInfoModal()" class="w-full bg-slate-800 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs">Close Rules</button>
     </div>
 </div>
 
 <div id="scoreModal" class="hidden fixed inset-0 z-[7000] bg-slate-950/98 flex items-center justify-center p-6 backdrop-blur-xl">
     <div class="w-full max-w-sm glass-card flex flex-col max-h-[85vh]">
-        <h2 class="text-xl font-royal text-yellow-500 mb-6 text-center uppercase">Hall of Fame</h2>
+        <h2 class="text-xl font-royal text-yellow-500 mb-6 text-center uppercase tracking-widest">Hall of Fame</h2>
         <div id="modalScoreList" class="flex-1 overflow-y-auto no-scrollbar space-y-4"></div>
         <div class="mt-8 grid grid-cols-2 gap-2">
-            <button onclick="clearHistoryOnly()" class="bg-orange-900/40 text-orange-500 py-3 rounded-xl text-xs uppercase font-bold">Clear Hist</button>
-            <button onclick="resetEntireGame()" class="bg-red-900/40 text-red-500 py-3 rounded-xl text-xs uppercase font-bold">Reset All</button>
-            <button onclick="toggleScoreModal()" class="col-span-2 bg-slate-800 py-4 rounded-xl uppercase font-bold text-xs mt-2">Close</button>
+            <button onclick="fullReset()" class="bg-red-900/30 text-red-500 py-4 rounded-2xl text-[10px] uppercase font-black border border-red-900/50">Full Reset</button>
+            <button onclick="toggleScoreModal()" class="bg-slate-800 py-4 rounded-2xl uppercase font-black text-[10px] border border-slate-700">Close</button>
         </div>
     </div>
 </div>
 
-<script>
-let players = [], currentRound = 1, totalRounds = 5, assignedRoles = [], currentTurn = 0, selectedSuspect = null, timerInterval;
+<div id="verdictOverlay" class="hidden fixed inset-0 z-[6000] flex items-center justify-center p-8 backdrop-blur-3xl bg-slate-950/80">
+    <div class="w-full max-w-sm glass-card p-10 text-center border-2 border-white/10" id="verdictBox">
+        <div id="verdictIcon" class="text-8xl mb-6"></div>
+        <h2 id="verdictTitle" class="text-4xl font-royal mb-4 uppercase"></h2>
+        <p id="verdictDesc" class="text-slate-400 text-xs uppercase mb-10 font-bold tracking-widest"></p>
+        <button onclick="closeVerdict()" class="w-full bg-white text-black font-black py-5 rounded-2xl uppercase shadow-2xl">Continue</button>
+    </div>
+</div>
 
-const playSnd = (id) => { const s = document.getElementById(id); if(s) { s.currentTime = 0; s.play().catch(()=>{}); } };
-const stopSnd = (id) => { const s = document.getElementById(id); if(s) { s.pause(); s.currentTime = 0; } };
-
-function loadData() {
-    const d = localStorage.getItem('rr_players');
-    players = d ? JSON.parse(d) : [];
-    players.forEach(p => { if (!p.stats) p.stats = { '👑':0, '👮':0, '👤':0 }; if (!p.history) p.history = []; });
-}
-
-function save() { localStorage.setItem('rr_players', JSON.stringify(players)); }
-
-function shuffleRoles(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function confirmRounds() {
-    totalRounds = parseInt(document.getElementById('roundInput').value) || 5;
-    document.getElementById('roundSetup').classList.add('hidden');
-    document.getElementById('setup').classList.remove('hidden');
-}
-
-function addPlayer() {
-    const n = document.getElementById('playerName'), p = document.getElementById('playerPass');
-    if (!n.value || p.value.length !== 2) return;
-    players.push({ name: n.value.trim().toUpperCase(), pass: p.value, score: 0, history: [], stats: { '👑':0, '👸':0, '👮':0, '👤':0 } });
-    n.value = ""; p.value = ""; renderPlayerList(); save();
-}
-
-function renderPlayerList() {
-    document.getElementById('playerList').innerHTML = players.map((p, i) => `<div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex justify-between"><span>👤 ${p.name}</span><button onclick="players.splice(${i}, 1); renderPlayerList(); save();" class="text-red-500">✕</button></div>`).join('');
-    document.getElementById('startBtn').classList.toggle('hidden', players.length < 4);
-}
-
-function startGame() { startRound(); }
-
-function startRound() {
-    let pool = ["RAJA 👑", "RANI 👸", "KAVALAN 👮", "THIRUDAN 👤"];
-    while(pool.length < players.length) pool.push("MAKKAL 👥");
-    assignedRoles = shuffleRoles([...pool]);
-    currentTurn = 0;
-    document.getElementById('setup').classList.add('hidden');
-    document.getElementById('scoreScreen').classList.add('hidden');
-    document.getElementById('passwordScreen').classList.remove('hidden');
-    prepareTurn();
-}
-
-function prepareTurn() {
-    document.getElementById('pinEntryArea').classList.remove('hidden');
-    document.getElementById('roleDisplayArea').classList.add('hidden');
-    document.getElementById('passPhoneArea').classList.add('hidden');
-    document.getElementById('turnIndicator').innerText = players[currentTurn].name;
-    document.getElementById('checkPass').value = "";
-}
-
-function checkPassword() {
-    if (document.getElementById('checkPass').value === players[currentTurn].pass) {
-        const role = assignedRoles[currentTurn];
-        if(role.includes("KAVALAN")) playSnd('sndSiren'); else playSnd('sndReveal');
-        document.getElementById('roleShow').innerText = role;
-        document.getElementById('pinEntryArea').classList.add('hidden');
-        document.getElementById('roleDisplayArea').classList.remove('hidden');
-    } else { alert("WRONG PIN"); document.getElementById('checkPass').value = ""; }
-}
-
-function hideRole() { stopSnd('sndSiren'); document.getElementById('roleDisplayArea').classList.add('hidden'); document.getElementById('passPhoneArea').classList.remove('hidden'); }
-function nextPlayer() { currentTurn++; if (currentTurn < players.length) prepareTurn(); else startPolicePhase(); }
-
-function startPolicePhase() {
-    document.getElementById('passwordScreen').classList.add('hidden');
-    document.getElementById('policeScreen').classList.remove('hidden');
-    document.getElementById('mainBody').classList.add('siren-bg');
-    playSnd('sndSiren');
-    const kIdx = assignedRoles.indexOf('KAVALAN 👮');
-    document.getElementById('policeName').innerText = players[kIdx].name;
-    document.getElementById('suspectContainer').innerHTML = players.map((p, i) => i === kIdx ? '' : `<button onclick="handleSelect(${i}, this)" class="sus-btn w-full p-5 rounded-2xl bg-slate-900 border border-slate-800 flex justify-between items-center"><span class="font-bold truncate mr-2">${p.name}</span><div class="indicator w-4 h-4 rounded-full border-2 border-slate-700"></div></button>`).join('');
-    let t = 30;
-    timerInterval = setInterval(() => { t--; document.getElementById('timerDisplay').innerText = t+"s"; if(t <= 0) { clearInterval(timerInterval); submitGuess(true); } }, 1000);
-}
-
-function handleSelect(idx, el) {
-    selectedSuspect = idx;
-    document.querySelectorAll('.sus-btn').forEach(b => b.classList.remove('border-blue-500', 'bg-blue-900/30'));
-    el.classList.add('border-blue-500', 'bg-blue-900/30');
-    document.getElementById('arrestBtn').classList.remove('opacity-20', 'pointer-events-none');
-}
-
-function submitGuess(isT) {
-    clearInterval(timerInterval); stopSnd('sndSiren'); document.getElementById('mainBody').classList.remove('siren-bg');
-    const tIdx = assignedRoles.indexOf('THIRUDAN 👤'), kIdx = assignedRoles.indexOf('KAVALAN 👮');
-    players.forEach((p, i) => {
-        const emoji = assignedRoles[i].split(' ')[1];
-        p.history.push(emoji); p.stats[emoji] = (p.stats[emoji] || 0) + 1;
-        p.score += assignedRoles[i].includes('RAJA') ? 1000 : assignedRoles[i].includes('RANI') ? 500 : assignedRoles[i].includes('MAKKAL') ? 300 : 0;
-    });
-    const win = !isT && selectedSuspect === tIdx;
-    if (win) { players[kIdx].score += 250; playSnd('sndWin'); } else { players[tIdx].score += 250; playSnd('sndFail'); }
-    save();
-    document.getElementById('verdictTitle').innerText = win ? "ARRESTED!" : "ESCAPED!";
-    document.getElementById('verdictDesc').innerText = "THIEF WAS " + players[tIdx].name;
-    document.getElementById('verdictIcon').innerText = win ? "🚓" : "🎭";
-    document.getElementById('verdictOverlay').classList.remove('hidden');
-}
-
-function closeVerdict() {
-    document.getElementById('verdictOverlay').classList.add('hidden');
-    document.getElementById('policeScreen').classList.add('hidden');
-    document.getElementById('scoreScreen').classList.remove('hidden');
-    document.getElementById('roundNum').innerText = currentRound;
-    document.getElementById('roundResultsList').innerHTML = [...players].sort((a,b)=>b.score-a.score).map(p => `<div class="bg-slate-900/50 p-4 rounded-xl flex justify-between items-center"><span class="font-bold text-xs">${p.name}</span><span class="text-yellow-500 font-mono font-bold">${p.score}</span></div>`).join('');
-    if (currentRound >= totalRounds) { document.getElementById('nextRoundBtn').innerText = "END EMPIRE"; }
-}
-
-function nextRound() {
-    if (currentRound >= totalRounds) { showCelebration(); }
-    else { currentRound++; startRound(); }
-}
-
-function showCelebration() {
-    document.getElementById('scoreScreen').classList.add('hidden');
-    document.getElementById('celebrationScreen').classList.remove('hidden');
-    confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 } });
-    const sorted = [...players].sort((a, b) => b.score - a.score);
-    document.getElementById('podium').innerHTML = sorted.slice(0, 3).map((p, i) => `
-        <div class="bg-slate-900 border-2 ${i===0?'border-yellow-500':'border-slate-700'} p-6 rounded-3xl">
-            <div class="text-4xl mb-2">${i===0?'🥇':i===1?'🥈':'🥉'}</div>
-            <div class="font-royal text-xl">${p.name}</div>
-            <div class="text-yellow-500 font-bold">${p.score} PTS</div>
-        </div>`).join('');
-}
-
-function toggleInfoModal() { document.getElementById('infoModal').classList.toggle('hidden'); }
-function toggleScoreModal() {
-    const m = document.getElementById('scoreModal');
-    if(m.classList.contains('hidden')) {
-        const maxR = Math.max(...players.map(p => p.stats['👑'] || 0)), maxT = Math.max(...players.map(p => p.stats['👤'] || 0));
-        document.getElementById('modalScoreList').innerHTML = players.map(p => `
-            <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800">
-                <div class="flex flex-wrap items-center gap-1 mb-2">
-                    <span class="font-bold text-xs uppercase">${p.name}</span>
-                    ${p.stats['👑']===maxR && maxR>0?'<span class="victory-badge badge-gold">👑 Royal</span>':''}
-                    ${p.stats['👤']===maxT && maxT>0?'<span class="victory-badge badge-dark">👤 Wanted</span>':''}
-                </div>
-                <div class="text-yellow-500 font-mono font-bold mb-3">${p.score} Pts</div>
-                <div class="flex gap-2 overflow-x-auto no-scrollbar">${p.history.map(h => `<div class="history-dot">${h}</div>`).join('')}</div>
-            </div>`).join('');
-        m.classList.remove('hidden');
-    } else m.classList.add('hidden');
-}
-
-function clearHistoryOnly() { if(confirm("Reset scores?")) { players.forEach(p => { p.score = 0; p.history = []; p.stats = { '👑':0, '👸':0, '👮':0, '👤':0 }; }); currentRound = 1; save(); location.reload(); } }
-function resetEntireGame() { if(confirm("Reset all?")) { localStorage.clear(); location.reload(); } }
-
-if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
-loadData();
-if (players.length > 0) { document.getElementById('roundSetup').classList.add('hidden'); document.getElementById('setup').classList.remove('hidden'); renderPlayerList(); }
-</script>
+<script src="script.js"></script>
 </body>
 </html>
