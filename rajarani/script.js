@@ -101,18 +101,35 @@ function prepareTurn() {
     document.getElementById('turnIndicator').innerText = players[currentTurn].name;
     document.getElementById('checkPass').value = "";
 }
-
 function checkPassword() {
-    if (document.getElementById('checkPass').value === players[currentTurn].pass) {
+    const enteredPin = document.getElementById('checkPass').value;
+    const playerPin = players[currentTurn].pass;
+
+    if (enteredPin === playerPin) {
         const role = assignedRoles[currentTurn];
-        document.getElementById('roleShow').innerText = role;
+        
+        // Define points based on role
+        let points = "0";
+        if (role.includes("RAJA")) points = "1000";
+        else if (role.includes("RANI")) points = "500";
+        else if (role.includes("MAKKAL")) points = "300";
+        else if (role.includes("KAVALAN") || role.includes("THIRUDAN")) points = "250";
+
+        // Update the display with Bold Points
+        document.getElementById('roleShow').innerHTML = `
+            <div class="animate-bounce mb-2">${role}</div>
+            <div class="text-xs text-slate-500 font-sans tracking-[0.2em] mb-1">BOUNTY</div>
+            <div class="text-6xl font-black text-white drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">${points}</div>
+            <div class="text-[10px] text-yellow-500 font-bold mt-1">POINTS</div>
+        `;
+        
         document.getElementById('pinEntryArea').classList.add('hidden');
         document.getElementById('roleDisplayArea').classList.remove('hidden');
         
         if(role.includes("KAVALAN")) playSnd('sndSiren');
         else playSnd('sndReveal');
     } else {
-        alert("Incorrect PIN");
+        alert("Wrong PIN!");
         document.getElementById('checkPass').value = "";
     }
 }
@@ -189,12 +206,62 @@ function closeVerdict() {
 function showCelebration() {
     showScreen('celebrationScreen');
     confetti({ particleCount: 200, spread: 100, origin: { y: 0.8 } });
+    
     const sorted = [...players].sort((a,b) => b.score - a.score);
-    document.getElementById('podium').innerHTML = sorted.map((p, i) => `
-        <div class="bg-slate-900/80 p-5 rounded-3xl border ${i===0?'border-yellow-500':'border-slate-800'} flex justify-between items-center">
-            <span class="font-royal text-sm">${i+1}. ${p.name}</span>
-            <span class="text-yellow-500 font-bold font-mono">${p.score} PTS</span>
-        </div>`).join('');
+    document.getElementById('podium').innerHTML = `
+        <div class="space-y-3 mb-8">
+            ${sorted.map((p, i) => `
+                <div class="bg-slate-900/80 p-5 rounded-3xl border ${i===0?'border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]':'border-slate-800'} flex justify-between items-center">
+                    <span class="font-royal text-sm">${i+1}. ${p.name}</span>
+                    <span class="text-yellow-500 font-bold font-mono">${p.score} PTS</span>
+                </div>
+            `).join('')}
+        </div>
+        
+        <div class="grid grid-cols-1 gap-3 mt-6">
+            <button onclick="continueWithSamePlayers()" class="w-full bg-yellow-500 text-black font-black py-5 rounded-2xl uppercase text-xs shadow-lg">
+                Add More Rounds (Keep Points) ➕
+            </button>
+            
+            <button onclick="resetPointsOnly()" class="w-full bg-slate-800 text-white font-black py-5 rounded-2xl uppercase text-xs border border-slate-700 shadow-lg">
+                Clear Points (Same Players) 🔄
+            </button>
+
+            <button onclick="goToPlayerEntry()" class="w-full bg-slate-800 text-white font-black py-5 rounded-2xl uppercase text-xs border border-slate-700 shadow-lg">
+                Change Players 👤
+            </button>
+
+            <button onclick="fullReset()" class="w-full bg-red-900/20 text-red-500 font-black py-4 rounded-2xl uppercase text-[10px] border border-red-900/30">
+                Full System Restart ⚠️
+            </button>
+        </div>
+    `;
+}
+
+// 1. Add More Rounds (Scenario: Keep players and scores, just add rounds)
+function continueWithSamePlayers() {
+    let extra = prompt("How many more rounds to add?", "5");
+    if (extra) {
+        totalRounds += parseInt(extra);
+        currentRound++; // Move to the next round number
+        startRound();
+    }
+}
+
+// 2. Clear Points (Scenario: Same players, but scores back to zero)
+function resetPointsOnly() {
+    if(confirm("Keep players but reset all scores to 0?")) {
+        players.forEach(p => { p.score = 0; p.history = []; });
+        save();
+        currentRound = 1;
+        showScreen('roundSetup'); // Go back to set rounds
+    }
+}
+
+// 3. Player Entry Place (Scenario: Keep points/settings but add/remove people)
+function goToPlayerEntry() {
+    showScreen('setup');
+    renderPlayerList();
 }
 
 function showScreen(id) {

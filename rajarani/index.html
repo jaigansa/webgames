@@ -56,7 +56,7 @@
             </div>
             <div id="roleDisplayArea" class="hidden flex flex-col items-center">
                 <div class="w-full bg-slate-950 min-h-[250px] px-6 py-10 rounded-[3.5rem] border-2 border-yellow-500/30 flex flex-col justify-center items-center">
-                    <p id="roleShow" class="text-4xl font-royal tracking-widest text-yellow-500"></p>
+                    <div id="roleShow" class="font-royal text-center uppercase"></div>
                     <div class="h-[1px] w-10 bg-slate-800 my-6"></div>
                     <p class="text-[11px] text-slate-400 uppercase italic">Keep it hidden!</p>
                 </div>
@@ -78,12 +78,11 @@
             <button id="arrestBtn" onclick="submitGuess(false)" class="bg-blue-700 py-6 rounded-2xl w-full font-black uppercase opacity-20 pointer-events-none shadow-lg">ARREST</button>
         </div>
 
-        <div id="celebrationScreen" class="hidden space-y-8 screen-fade text-center">
+        <div id="celebrationScreen" class="hidden space-y-6 screen-fade text-center">
             <h2 class="text-4xl font-royal text-yellow-500">EMPIRE TOTALS</h2>
-            <div id="podium" class="space-y-4 py-4 text-left"></div>
+            <div id="podium" class="w-full"></div>
             <div class="space-y-3">
                 <button onclick="shareResults()" class="w-full bg-blue-600 text-white font-black py-6 rounded-2xl uppercase shadow-lg">Share Rankings 📤</button>
-                <button onclick="fullReset()" class="w-full bg-white text-black font-black py-6 rounded-2xl uppercase shadow-lg">Full Restart</button>
             </div>
         </div>
     </div>
